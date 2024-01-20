@@ -51,3 +51,21 @@ Along with this information, MLflow Tracking also records:
 - Start and End time
 - Author
 
+### Installtion
+
+```bash
+pip install mlflow
+```
+
+![Alt text](image.png)
+
+### Tracking Server
+
+```bash
+mlflow ui
+```
+
+![Alt text](image-1.png)
+
+![Alt text](image-2.png)
+
