@@ -38,3 +38,25 @@ import mlflow
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("ny_ride_duration")
 ```
+
+Use the following command to log the parameters, metrics and artifacts by mlflow.
+
+```python
+with mlflow.start_run():
+    mlflow.set_tag('model', 'Lasso')
+    mlflow.set_tag('version', 'v1')
+    mlflow.set_tag('develper', 'ram_polisetti')
+
+    alpha = 0.01
+    ls = Lasso(alpha)
+    ls.fit(X_train, y_train)
+    y_pred = ls.predict(X_val)
+    
+    mlflow.log_param('alpha', 0.01)
+    mlflow.log_param('train_data_path', 'green_tripdata_2023-10.parquet')
+    mlflow.log_param('val_data_path', 'green_tripdata_2023-11.parquet')
+    mlflow.log_metric('rmse', root_mean_squared_error(y_val, y_pred))
+    mlflow.sklearn.log_model(ls, 'model')
+    
+    root_mean_squared_error(y_val, y_pred)
+```
