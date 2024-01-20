@@ -28,3 +28,13 @@ This command will start the mlflow server on port 5000. You can access the mlflo
 ![Alt text](image.png)
 ![Alt text](image-2.png)
 ![Alt text](image-1.png)
+
+*Now we have to import the mlflow library in our python script*
+
+first we have to set the tracking uri to the sqlite database file and then we have to set the experiment name(if it is already created then it will use that experiment otherwise it will create a new experiment with the given name).
+
+```python
+import mlflow
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
+mlflow.set_experiment("ny_ride_duration")
+```
