@@ -60,3 +60,57 @@ with mlflow.start_run():
     
     root_mean_squared_error(y_val, y_pred)
 ```
+
+Hyperparameter tuning with mlflow
+
+```python
+import xgboost as xgb
+
+from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
+from hyperopt.pyll.base import scope
+train = xgb.DMatrix(X_train, label=y_train)
+valid = xgb.DMatrix(X_val, label=y_val)
+
+
+def objective(params):
+    with mlflow.start_run():
+        mlflow.set_tag('model', 'XGBoost')
+        for key, value in params.items():
+            mlflow.log_param(key, value)
+        mlflow.set_tag('develper', 'ram_polisetti')
+
+        booster = xgb.train(params, 
+                            dtrain = train, 
+                            num_boost_round=1000,
+                            evals=[(valid, 'validation')], 
+                            early_stopping_rounds=50
+        )
+        y_pred = booster.predict(valid)
+        rmse = root_mean_squared_error(y_val, y_pred)
+        
+        # mlflow.log_param('train_data_path', 'green_tripdata_2023-10.parquet')
+        # mlflow.log_param('val_data_path', 'green_tripdata_2023-11.parquet')
+        mlflow.log_metric('rmse', rmse)
+        mlflow.sklearn.log_model(ls, 'model')
+        
+    return {'loss': rmse, 'status': STATUS_OK}
+    
+    search_space = {
+    'max_depth': scope.int(hp.quniform('max_depth', 4, 100, 1)),
+    'learning_rate': hp.loguniform('learning_rate', -3, 0),
+    'reg_alpha': hp.loguniform('reg_alpha', -5, -1),
+    'reg_lambda': hp.loguniform('reg_lambda', -6, -1),
+    'min_child_weight': hp.loguniform('min_child_weight', -1, 3),
+    'objective': 'reg:linear',
+    'seed': 42
+}
+
+best_result = fmin(
+    fn=objective,
+    space=search_space,
+    algo=tpe.suggest,
+    max_evals=50,
+    trials=Trials()
+)
+
+```
