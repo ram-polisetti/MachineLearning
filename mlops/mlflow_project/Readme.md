@@ -116,7 +116,13 @@ best_result = fmin(
 
 ```
 
-## Model Management
+### Model Management
+
+- MLflow Models is a convention for packaging machine learning models in multiple formats called "flavors".
+- A model can be viewed as a collection of artifacts that can be understood as a single object.
+- Each model has a *flavor* which is a way of packaging models.
+- MLflow provides a number of built-in flavors for the most common model types.
+- You can also define your own flavors.
 
 ```python
 mlflow.xgboost.load_model(model, 'model')
